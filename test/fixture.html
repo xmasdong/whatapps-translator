@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>WAT fixture</title>
+  </head>
+  <body>
+    <!-- Mirrors the real WhatsApp Web DOM (2026 build): obfuscated classes are
+         gone, messages are conv-msg containers, direction is derived from an
+         outgoing status icon inside msg-meta. -->
+    <div id="app">
+      <div id="main">
+        <header><span title="Alice">Alice</span></header>
+        <div role="application">
+          <!-- A1: incoming plain text (Spanish; target zh -> translate) -->
+          <div role="row">
+            <div data-id="A1" data-testid="conv-msg-A1">
+              <div data-testid="msg-container">
+                <span data-testid="tail-in" data-icon="tail-in"></span>
+                <div class="copyable-text" data-pre-plain-text="[10:00, 2026年7月14日] Alice: ">
+                  <span data-testid="selectable-text" dir="ltr" class="selectable-text copyable-text"><span>Hola, ¿cómo estás?</span></span>
+                  <span aria-hidden="true"><span>10:00</span></span>
+                </div>
+                <div data-testid="msg-meta"><span>10:00</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- A2: incoming with emoji as <img alt> (must be preserved) -->
+          <div role="row">
+            <div data-id="A2" data-testid="conv-msg-A2">
+              <div data-testid="msg-container">
+                <div class="copyable-text" data-pre-plain-text="[10:01, 2026年7月14日] Alice: ">
+                  <span data-testid="selectable-text" class="selectable-text copyable-text"><span>Bien <img class="emoji" alt="😀" />!</span></span>
+                </div>
+                <div data-testid="msg-meta"><span>10:01</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OUT1: outgoing (your own) -> msg-meta carries a status tick -> ignored -->
+          <div role="row">
+            <div data-id="OUT1" data-testid="conv-msg-OUT1">
+              <div data-testid="msg-container">
+                <div class="copyable-text" data-pre-plain-text="[10:02, 2026年7月14日] You: ">
+                  <span data-testid="selectable-text" class="selectable-text copyable-text"><span>me too</span></span>
+                </div>
+                <div data-testid="msg-meta"><span>10:02</span><span data-icon="msg-dblcheck"></span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- A3: incoming already in target (zh) -> same-language skip -->
+          <div role="row">
+            <div data-id="A3" data-testid="conv-msg-A3">
+              <div data-testid="msg-container">
+                <div class="copyable-text" data-pre-plain-text="[10:03, 2026年7月14日] Alice: ">
+                  <span data-testid="selectable-text" class="selectable-text copyable-text"><span>你好呀</span></span>
+                </div>
+                <div data-testid="msg-meta"><span>10:03</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- A4: deleted / recalled (incoming) -->
+          <div role="row">
+            <div data-id="A4" data-testid="conv-msg-A4">
+              <div data-testid="msg-container">
+                <span data-icon="recalled"></span>
+                <div class="copyable-text" data-pre-plain-text="[10:04, 2026年7月14日] Alice: ">
+                  <span data-testid="selectable-text" class="selectable-text copyable-text"><span>This message was deleted</span></span>
+                </div>
+                <div data-testid="msg-meta"><span>10:04</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- A5: media without caption (no copyable-text gate) -->
+          <div role="row">
+            <div data-id="A5" data-testid="conv-msg-A5">
+              <div data-testid="msg-container"><img src="data:," alt="" /></div>
+            </div>
+          </div>
+
+          <!-- A6: quoted reply -> the quote lives INSIDE the wrapper (real WA
+               structure), before the real text; must translate only the reply. -->
+          <div role="row">
+            <div data-id="A6" data-testid="conv-msg-A6">
+              <div data-testid="msg-container">
+                <div class="copyable-text" data-pre-plain-text="[10:05, 2026年7月14日] Alice: ">
+                  <div data-testid="quoted-message">
+                    <span data-testid="selectable-text" class="quoted-mention selectable-text copyable-text">quoted junk</span>
+                  </div>
+                  <div class="x1n2onr6">
+                    <span data-testid="selectable-text" class="selectable-text copyable-text"><span>see above</span></span>
+                  </div>
+                </div>
+                <div data-testid="msg-meta"><span>10:05</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- system / date row (no conv-msg / data-id) -->
+          <div role="row"><div><span>TODAY</span></div></div>
+
+          <!-- A7: emoji-only trivial (incoming) -->
+          <div role="row">
+            <div data-id="A7" data-testid="conv-msg-A7">
+              <div data-testid="msg-container">
+                <div class="copyable-text" data-pre-plain-text="[10:06, 2026年7月14日] Alice: ">
+                  <span data-testid="selectable-text" class="selectable-text copyable-text"><span><img class="emoji" alt="🎉" /></span></span>
+                </div>
+                <div data-testid="msg-meta"><span>10:06</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer>
+          <div class="copyable-area">
+            <div data-testid="compose-box">
+              <div
+                contenteditable="true"
+                role="textbox"
+                data-tab="10"
+                data-testid="conversation-compose-box-input"
+                data-lexical-editor="true"
+              >
+                <p class="selectable-text copyable-text"><br /></p>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      // ---- test harness stub for chrome.* + a deterministic fake translator ----
+      const params = new URLSearchParams(location.hash.slice(1));
+      const MODE = params.get("mode") || "auto";
+      window.__watCalls = 0; // count of real translate calls (for the recycle/no-recall test)
+      window.__watLocal = {}; // in-memory chrome.storage.local
+
+      window.chrome = {
+        runtime: {
+          sendMessage: async (m) => {
+            if (m.type === "wat.translate") {
+              window.__watCalls++;
+              // Outgoing (draft) translations must NOT contain the source, so the
+              // harness can prove the composer was REPLACED, not appended.
+              if (m.payload.mode === "outgoing") return { ok: true, text: "EN[" + [...m.payload.text].length + "]" };
+              const ctx = m.payload.context ? " «ctx:" + m.payload.context + "»" : "";
+              return { ok: true, text: "[T]" + m.payload.text + ctx };
+            }
+            return { ok: false, error: "unknown message" };
+          },
+          onMessage: { addListener() {} }
+        },
+        storage: {
+          sync: {
+            get: async (d) => ({
+              ...d,
+              provider: "deepseek",
+              deepseekModel: "deepseek-chat",
+              targetLang: "zh-CN",
+              targetLabel: "中文",
+              mode: MODE,
+              dailyBudget: 0,
+              kbEnabled: params.get("kb") === "1",
+              outgoingEnabled: true,
+              outgoingLang: "en",
+              outgoingLabel: "English"
+            })
+          },
+          local: {
+            get: async (d) => {
+              const out = {};
+              for (const k of Object.keys(d)) out[k] = k in window.__watLocal ? window.__watLocal[k] : d[k];
+              return out;
+            },
+            set: async (o) => {
+              Object.assign(window.__watLocal, o);
+            }
+          },
+          onChanged: { addListener() {} }
+        }
+      };
+
+      // Optional: simulate WhatsApp dropping the message identity attributes so
+      // the selector self-test fires.
+      if (params.has("break")) {
+        document.querySelectorAll("[data-testid^='conv-msg-']").forEach((el) => {
+          el.removeAttribute("data-id");
+          el.removeAttribute("data-testid");
+        });
+      }
+    </script>
+    <script src="../src/contentScript.js"></script>
+  </body>
+</html>

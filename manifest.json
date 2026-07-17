@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "WhatsApp Web Translator (LLM)",
+  "version": "0.1.0",
+  "description": "Translate incoming WhatsApp Web messages in real time or on click, powered by your own LLM (OpenAI-compatible or Claude). Low-intrusion, bring your own API key.",
+  "permissions": ["storage", "unlimitedStorage"],
+  "host_permissions": [
+    "https://web.whatsapp.com/*",
+    "https://api.openai.com/*",
+    "https://api.deepseek.com/*",
+    "https://api.anthropic.com/*"
+  ],
+  "optional_host_permissions": ["https://*/*"],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "options_page": "src/options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["src/contentScript.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
